@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText inputText;
     private ArrayAdapter<String> resultAdapter;
 
+    private static final String KEY_RESULT = "MainActivity.savedResult";
+    private ArrayList<String> savedResult = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        if (savedInstanceState != null) {
+            savedResult = savedInstanceState.getStringArrayList(KEY_RESULT);
+            resultAdapter.addAll(savedResult);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(KEY_RESULT, savedResult);
     }
 
     private final static int MSG_RESULT = 1111;
@@ -119,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             if (result.size() == 0)
                 result.add(getString(R.string.no_suggestions));
             handler.sendMessage(handler.obtainMessage(MSG_RESULT, result));
+            savedResult = result;
         }
     }
 }
